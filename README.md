@@ -142,7 +142,7 @@ SELECT *
 FROM test
 WHERE age = ?;
 ```
-Then, rebuild the project. Open the model implementation (in this case `test.java`) and add:
+Then, rebuild the project. Open the model implementation (in this case `Test.java`) and add:
 ```java
 @UiThread
 public static Observable<Test> getByAge(final long age) {
