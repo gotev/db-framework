@@ -31,12 +31,14 @@ Then, create a directory named `sqldelight` inside your app's `src/main` directo
 
 In Android Studio open `Preferences` > `Plugins` > `Browse repositories` and search for `SQLDelight`. Install the plugin and restart Android Studio. After this the initial setup is over!
 
-## How to create a table
+## How to create a table and its Java model
 1. Create a new `.sq` file inside your `sqldelight` directory, for example `src/main/sqldelight/com/yourcompany/db/Test.sq`:
 ```sql
 CREATE TABLE test (
     _id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    name TEXT
+    name TEXT,
+    surname TEXT,
+    age INTEGER NOT NULL
 );
 ```
 2. Rebuild your project. A new interface called `TestModel` will be automatically generated
@@ -54,8 +56,8 @@ public abstract class Test implements TestModel, Parcelable {
 
     private static final Factory<Test> FACTORY = new Factory<>(new TestModel.Creator<Test>() {
         @Override
-        public Test create(long _id, @Nullable String name) {
-            return new AutoValue_Test(_id, name);
+        public Test create(long _id, @Nullable String name, @Nullable String surname, long age) {
+            return new AutoValue_Test(_id, name, surname, age);
         }
     });
 
@@ -126,6 +128,66 @@ public class M1_CreateTestTable implements DatabaseMigration {
     @Override
     public void down(SQLiteDatabase db) {
         DatabaseManager.getDropTableSql(TestModel.TABLE_NAME);
+    }
+}
+```
+
+## Query
+To query a table, define the SQL SELECT statement in the table's `.sq` file. In case of a JOIN, put the SELECT statement in one of the tables involed in the join operation.
+
+For example, let's get all the records by age. Add the following to `Test.sq`, after the `CREATE TABLE` statement:
+```sql
+get_by_age:
+SELECT *
+FROM test
+WHERE age = ?;
+```
+Then, rebuild the project. Open the model implementation (in this case `test.java`) and add:
+```java
+@UiThread
+public static Observable<Test> getByAge(final long age) {
+
+    return DatabaseManager.getObservable(
+                FACTORY.get_by_age(age),
+                FACTORY.get_by_ageMapper())
+            .observeOn(AndroidSchedulers.mainThread());
+}
+```
+
+At this point, you can easily perform the query in an activity:
+```java
+public class MainActivity extends AppCompatActivity {
+    private Subscription subscription;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        subscription = Test.getByAge(27)
+                .subscribe(new Subscriber<Test>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        // handle database read error
+                    }
+
+                    @Override
+                    public void onNext(Test test) {
+                        // do something with the object
+                    }
+                });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (subscription != null && !subscription.isUnsubscribed())
+            subscription.unsubscribe();
     }
 }
 ```
