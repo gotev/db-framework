@@ -67,6 +67,8 @@ public abstract class Test implements TestModel, Parcelable {
 ```
 Bear in mind that `AutoValue_Test` might be red when you write it. You need to recompile for the AutoValue class to be generated.
 
+For more information, check [SQLDelight](https://github.com/square/sqldelight) docs.
+
 ## Database initialization and migrations
 Create an [Android Application](http://developer.android.com/reference/android/app/Application.html) subclass, register it in your manifest and initialize the database framework like this:
 ```java
