@@ -40,17 +40,20 @@ In Android Studio open `Preferences` > `Plugins` > `Browse repositories` and sea
 
 ## How to create a table and its Java model
 1. Create a new `.sq` file inside your `sqldelight` directory, for example `src/main/sqldelight/com/yourcompany/db/Test.sq`:
-```sql
+
+  ```sql
 CREATE TABLE test (
     _id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     name TEXT,
     surname TEXT,
     age INTEGER NOT NULL
 );
-```
+  ```
+
 2. Rebuild your project. A new interface called `TestModel` will be automatically generated
 3. In your Java package, implement the model:
-```java
+
+  ```java
 package com.yourcompany.db;
 
 import android.os.Parcelable;
@@ -73,7 +76,7 @@ public abstract class Test implements TestModel, Parcelable {
     }
 
 }
-```
+  ```
 Bear in mind that `AutoValue_Test` might be red when you write it. You need to recompile for the AutoValue class to be generated.
 
 If you also use the [Retrolambda](https://github.com/evant/gradle-retrolambda) plugin, you can reduce boilerplate even further:
@@ -244,8 +247,8 @@ public class MainActivity extends RxAppCompatActivity {
 }
 ```
 
-## Add, update and delete
-Add, update and delete operations have to be performed with transactions, to be sure the DB is consistent. Those operations have to be performed in the background. I advise you to implement an `IntentService` for doing so, or to use one of the multitude of background job scheduling libraries. Here there's an example with a very basic `IntentService`:
+## Insert, update and delete
+Insert, update and delete operations have to be performed with transactions, to be sure the DB is consistent. Those operations have to be performed in the background. I advise you to implement an `IntentService` for doing so, or to use one of the multitude of background job scheduling libraries. Here there's an example with a very basic `IntentService`:
 
 ```java
 public class PopulateTestTableService extends IntentService {
@@ -313,10 +316,12 @@ You may also find useful [stetho no-op for production](https://github.com/iGeniu
 >Note: This method requires ROOT on the device you're adbing to
 
 1. List devices connected to adb: `adb devices`
-```
+
+  ```shell
 List of devices attached
 emulator-5554   device
-```
+  ```
+
 2. Connect to the device (e.g. `emulator-5554`): `adb -s emulator-5554 shell`
 3. Become superuser: `su`
 4. Open your app's database: `sqlite3 data/data/com.youcompany.app/databases/yourdatabase.db`
