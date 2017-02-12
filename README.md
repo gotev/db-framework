@@ -302,9 +302,12 @@ To work, the `IntentService` has to be registered in the manifest:
 ## Debug
 ### Facebook Stetho
 If you integrate [Facebook Stetho](http://facebook.github.io/stetho/) in your debug builds, you can easily browse the SQLite database and perform queries on it with your Chrome Developer Tools:
+
 1. Open in Chrome: [chrome://inspect](chrome://inspect)
 2. Click on `inspect` under your device
 3. Click on `Resources` tab, then expand `Web SQL` and select `yourdatabase.db`
+
+You may also find useful [stetho no-op for production](https://github.com/iGenius-Srl/stetho-no-op) library, to disable stetho in production.
 
 ### Connecting with ADB
 >Note: This method requires ROOT on the device you're adbing to
