@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.squareup.sqldelight'
@@ -47,8 +46,6 @@ android {
     }
 }
 
-def autoValueVersion = "1.2"
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -56,9 +53,10 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
 
-    compile "com.squareup.sqlbrite:sqlbrite:1.1.1"
-    provided "com.google.auto.value:auto-value:${autoValueVersion}"
-    apt "com.google.auto.value:auto-value:${autoValueVersion}"
+    compile "io.reactivex:rxandroid:1.+"
+    compile "io.reactivex:rxjava:1.+"
+
+    compile "com.squareup.sqlbrite:sqlbrite:1.1.+"
 
 }
 
