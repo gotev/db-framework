@@ -8,7 +8,17 @@ This project is powered by:
 * [AutoValue Parcel](https://github.com/rharter/auto-value-parcel) to automatically generate the `Parcelable` implementation for DB models.
 * [RxJava](https://github.com/ReactiveX/RxJava) and [RxAndroid](https://github.com/ReactiveX/RxAndroid)
 
-## Setup
+## Index
+* [Setup](#setup)
+* [Create a table and its Java model](#create)
+* [Database initialization and migrations](#initialization)
+* [Query](#query)
+* [Insert, update and delete](#insert-update-delete)
+* [Debug](#debug)
+* [SQLite cheatsheet](#sqlite)
+* [License](#license)
+
+## <a name="setup"></a>Setup
 In global gradle config file:
 ```groovy
 dependencies {
@@ -38,7 +48,7 @@ Then, create a directory named `sqldelight` inside your app's `src/main` directo
 
 In Android Studio open `Preferences` > `Plugins` > `Browse repositories` and search for `SQLDelight`. Install the plugin and restart Android Studio. After this the initial setup is over!
 
-## How to create a table and its Java model
+## <a name="create"></a>Create a table and its Java model
 1. Create a new `.sq` file inside your `sqldelight` directory, for example `src/main/sqldelight/com/yourcompany/db/Test.sq`:
 
   ```sql
@@ -95,7 +105,7 @@ public abstract class Test implements TestModel, Parcelable {
 
 For exhaustive information, check [SQLDelight](https://github.com/square/sqldelight) docs.
 
-## Database initialization and migrations
+## <a name="initialization"></a>Database initialization and migrations
 Create an [Android Application](http://developer.android.com/reference/android/app/Application.html) subclass, register it in your manifest and initialize the database framework like this:
 ```java
 public class App extends Application {
@@ -156,7 +166,7 @@ public class M1_CreateTestTable implements DatabaseMigration {
 }
 ```
 
-## Query
+## <a name="query"></a>Query
 To query a table, define the SQL SELECT statement in the table's `.sq` file. In case of a JOIN, put the SELECT statement in one of the tables involed in the join operation.
 
 For exhaustive information, check [SQLDelight](https://github.com/square/sqldelight) and [SQLBrite](https://github.com/square/sqlbrite) docs.
@@ -247,7 +257,7 @@ public class MainActivity extends RxAppCompatActivity {
 }
 ```
 
-## Insert, update and delete
+## <a name="insert-update-delete"></a>Insert, update and delete
 Insert, update and delete operations have to be performed with transactions, to be sure the DB is consistent. Those operations have to be performed in the background. I advise you to implement an `IntentService` for doing so, or to use one of the multitude of background job scheduling libraries. Here there's an example with a very basic `IntentService`:
 
 ```java
@@ -302,7 +312,7 @@ To work, the `IntentService` has to be registered in the manifest:
     android:exported="false" />
 ```
 
-## Debug
+## <a name="debug"></a>Debug
 ### Facebook Stetho
 If you integrate [Facebook Stetho](http://facebook.github.io/stetho/) in your debug builds, you can easily browse the SQLite database and perform queries on it with your Chrome Developer Tools:
 
@@ -327,7 +337,7 @@ emulator-5554   device
 4. Open your app's database: `sqlite3 data/data/com.youcompany.app/databases/yourdatabase.db`
 5. You can perform all the queries you want
 
-### SQLite cheatsheet
+## <a name="sqlite"></a>SQLite cheatsheet
 #### List the tables in your database:
 ```
 .tables
@@ -339,7 +349,7 @@ emulator-5554   device
 ```
 
 #### Print the entire table
-```
+```sql
 SELECT * FROM tablename;
 ```
 
@@ -348,7 +358,7 @@ SELECT * FROM tablename;
 .help
 ```
 
-## License
+## <a name="license"></a>License
 
     Copyright (C) 2017 Aleksandar Gotev
 
