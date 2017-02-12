@@ -1,5 +1,5 @@
 # DB Framework
-Mini reactive framework to work with SQLite databases on Android the reactive way. This project is powered by [SQLBrite](https://github.com/square/sqlbrite) and [SQLDelight](https://github.com/square/sqldelight) libraries, plus convenient initialization, transaction creation, common database methods and migration support. [Google AutoValue](https://github.com/google/auto/tree/master/value) is used to eliminate the need to write boilerplate for the database models.
+Mini reactive framework to work with SQLite databases on Android. This project is powered by [SQLBrite](https://github.com/square/sqlbrite) and [SQLDelight](https://github.com/square/sqldelight) libraries, plus convenient initialization, transaction creation, common database methods and migration support. [Google AutoValue](https://github.com/google/auto/tree/master/value) is used to eliminate the need to write boilerplate for the database models.
 
 # Setup
 In global gradle config file:
