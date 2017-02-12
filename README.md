@@ -166,9 +166,9 @@ WHERE age = ?;
 Then, rebuild the project. Open the model implementation (in this case `Test.java`) and add:
 ```java
 @UiThread
-public static Observable<Test> getByAge(final long age) {
+public static Observable<List<Test>> getByAge(final long age) {
 
-    return DatabaseManager.getObservable(
+    return DatabaseManager.getObservableList(
                 FACTORY.get_by_age(age),
                 FACTORY.get_by_ageMapper())
             .observeOn(AndroidSchedulers.mainThread());
@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         subscription = Test.getByAge(27)
-                .subscribe(new Subscriber<Test>() {
+                .subscribe(new Subscriber<List<Test>>() {
                     @Override
                     public void onCompleted() {
 
@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(Test test) {
+                    public void onNext(List<Test> test) {
                         // do something with the object
                     }
                 });
@@ -222,7 +222,7 @@ public class MainActivity extends RxAppCompatActivity {
 
         Test.getByAge(27)
             .compose(RxLifecycleAndroid.bindActivity(lifecycle()))
-            .subscribe(new Subscriber<Test>() {
+            .subscribe(new Subscriber<List<Test>>() {
                     @Override
                     public void onCompleted() {
 
@@ -234,12 +234,67 @@ public class MainActivity extends RxAppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(Test test) {
+                    public void onNext(List<Test> test) {
                         // do something with the object
                     }
                 });
     }
 }
+```
+
+## Add, update and delete
+Add, update and delete operations have to be performed with transactions, to be sure the DB is consistent. Those operations have to be performed in the background. I advise you to implement an `IntentService` for doing so, or to use one of the multitude of background job scheduling libraries. Here there's an example with a very basic `IntentService`:
+
+```java
+public class PopulateTestTableService extends IntentService {
+
+    public PopulateTestTableService() {
+        super("PopulateTestTableService");
+    }
+
+    public static void start(Context context) {
+        context.startService(new Intent(context, PopulateTestTableService.class));
+    }
+
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        if (intent == null)
+            return;
+
+        List<TestModel.Marshal> testUsers = new ArrayList<>();
+
+        testUsers.add(Test.getMarshal().name("John").surname("Smith").age(27));
+        testUsers.add(Test.getMarshal().name("Mario").surname("Rossi").age(23));
+        testUsers.add(Test.getMarshal().name("Stephen").surname("White").age(27));
+        testUsers.add(Test.getMarshal().name("Josh").surname("Blank").age(18));
+        testUsers.add(Test.getMarshal().name("Alfred").surname("Batman").age(60));
+
+        try {
+            TransactionBuilder transactionBuilder = new TransactionBuilder("populate test table");
+
+            for (TestModel.Marshal record : testUsers) {
+                transactionBuilder.add(save(record));
+            }
+
+            transactionBuilder.execute();
+
+        } catch (Throwable exception) {
+            Log.e("Populate", "Error while populating test table", exception);
+        }
+
+    }
+
+    private TransactionStatement save(TestModel.Marshal record) {
+        return DatabaseManager.save(TestModel.TABLE_NAME, TestModel._ID,
+                record.asContentValues(), true);
+    }
+}
+```
+To work, the `IntentService` has to be registered in the manifest:
+```xml
+<service
+    android:name=".PopulateTestTableService"
+    android:exported="false" />
 ```
 
 ## Publishing
