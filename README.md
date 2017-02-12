@@ -1,5 +1,12 @@
 # Android DB Framework
-Mini reactive framework to work with SQLite databases on Android. This project is powered by [SQLBrite](https://github.com/square/sqlbrite) and [SQLDelight](https://github.com/square/sqldelight) libraries, plus convenient initialization, transaction creation, common database methods and migration support. [Google AutoValue](https://github.com/google/auto/tree/master/value) is used to eliminate the need to write boilerplate for the database models. [AutoValue Parcel](https://github.com/rharter/auto-value-parcel) extension is used to auto generate the `Parcelable` implementation for DB models.
+Mini reactive framework to work with SQLite databases on Android. It has easy database initialization, transaction creation, common database methods and Db schema migration support.
+
+This project is powered by:
+* [SQLDelight](https://github.com/square/sqldelight) to create Java DB models and queries out of plain and simple SQL
+* [SQLBrite](https://github.com/square/sqlbrite) to perform queries on the database with Rx
+* [Google AutoValue](https://github.com/google/auto/tree/master/value) to automatically generate Java database model implementations
+* [AutoValue Parcel](https://github.com/rharter/auto-value-parcel) to automatically generate the `Parcelable` implementation for DB models.
+* [RxJava](https://github.com/ReactiveX/RxJava) and [RxAndroid](https://github.com/ReactiveX/RxAndroid)
 
 ## Setup
 In global gradle config file:
@@ -69,7 +76,21 @@ public abstract class Test implements TestModel, Parcelable {
 ```
 Bear in mind that `AutoValue_Test` might be red when you write it. You need to recompile for the AutoValue class to be generated.
 
-For more information, check [SQLDelight](https://github.com/square/sqldelight) docs.
+If you also use the [Retrolambda](https://github.com/evant/gradle-retrolambda) plugin, you can reduce boilerplate even further:
+```java
+@AutoValue
+public abstract class Test implements TestModel, Parcelable {
+
+    private static final Factory<Test> FACTORY = new Factory<>(AutoValue_Test::new);
+
+    public static Marshal getMarshal() {
+        return new Marshal(null);
+    }
+
+}
+```
+
+For exhaustive information, check [SQLDelight](https://github.com/square/sqldelight) docs.
 
 ## Database initialization and migrations
 Create an [Android Application](http://developer.android.com/reference/android/app/Application.html) subclass, register it in your manifest and initialize the database framework like this:
@@ -188,6 +209,35 @@ public class MainActivity extends AppCompatActivity {
 
         if (subscription != null && !subscription.isUnsubscribed())
             subscription.unsubscribe();
+    }
+}
+```
+
+If you use the excellent [RxLifecycle](https://github.com/trello/RxLifecycle) library, you don't even have to care of unsubscribing the observable:
+```java
+public class MainActivity extends RxAppCompatActivity {
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Test.getByAge(27)
+            .compose(RxLifecycleAndroid.bindActivity(lifecycle()))
+            .subscribe(new Subscriber<Test>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        // handle database read error
+                    }
+
+                    @Override
+                    public void onNext(Test test) {
+                        // do something with the object
+                    }
+                });
     }
 }
 ```
