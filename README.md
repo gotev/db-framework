@@ -16,6 +16,7 @@ This project is powered by:
 * [Insert, update and delete](#insert-update-delete)
 * [Debug](#debug)
 * [SQLite cheatsheet](#sqlite)
+* [Example app](#example)
 * [License](#license)
 
 ## <a name="setup"></a>Setup
@@ -114,7 +115,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        DatabaseManager.Logger logger;
+        DatabaseManager.Logger logger = null;
 
         // this way you will have logging only in debug builds
         if (BuildConfig.DEBUG) {
@@ -129,8 +130,6 @@ public class App extends Application {
                     Log.i("DB message", message);
                 }
             };
-        } else {
-            logger = null;
         }
 
         // initialize database. It will take care automatically of
@@ -357,6 +356,9 @@ SELECT * FROM tablename;
 ```
 .help
 ```
+
+## <a name="example"></a>Example app
+In the `example` directory you can find a complete example app which uses `DB Framework` and applies all the concepts documented in this README, together with `Retrolambda`, `ButterKnife`, `RxLifecycle` and `Stetho`.
 
 ## <a name="license"></a>License
 

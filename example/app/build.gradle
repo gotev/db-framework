@@ -1,0 +1,73 @@
+apply plugin: 'com.android.application'
+
+// DB Framework plugins
+apply plugin: 'android-apt'
+apply plugin: 'com.squareup.sqldelight'
+
+// Other plugins
+apply plugin: 'me.tatarka.retrolambda'
+
+// DB Framework dependencies versions
+def autoValueVersion = "1.2"
+def autoValueParcelVersion = "0.2.5"
+
+// Other dependencies versions
+def supportVersion = "25.1.1"
+def rxLifecycleVersion = "1.0"
+def butterKnifeVersion = "8.5.1"
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId "net.gotev.dbtest"
+        minSdkVersion 16
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Testing
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestCompile 'com.google.code.findbugs:jsr305:3.0.1' // needed for RxLifecycle
+    testCompile 'junit:junit:4.12'
+
+    // Android support libraries
+    compile "com.android.support:appcompat-v7:${supportVersion}"
+    compile "com.android.support:design:${supportVersion}"
+
+    // DB Framework
+    compile 'com.github.gotev:db-framework:0a76875957'
+    provided "com.google.auto.value:auto-value:${autoValueVersion}"
+    apt "com.google.auto.value:auto-value:${autoValueVersion}"
+    apt "com.ryanharter.auto.value:auto-value-parcel:${autoValueParcelVersion}"
+
+    // Rx Lifecycle
+    compile "com.trello:rxlifecycle:${rxLifecycleVersion}"
+    compile "com.trello:rxlifecycle-android:${rxLifecycleVersion}"
+    compile "com.trello:rxlifecycle-components:${rxLifecycleVersion}"
+
+    // ButterKnife
+    compile "com.jakewharton:butterknife:${butterKnifeVersion}"
+    apt "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"
+
+    // Facebook Stetho
+    compile 'com.facebook.stetho:stetho:1.4.2'
+}

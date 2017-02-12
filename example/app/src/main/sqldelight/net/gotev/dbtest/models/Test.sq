@@ -1,0 +1,11 @@
+CREATE TABLE test (
+    _id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    surname TEXT,
+    age INTEGER NOT NULL
+);
+
+get_by_age:
+SELECT *
+FROM test
+WHERE age = ?;
