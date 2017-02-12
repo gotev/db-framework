@@ -156,6 +156,8 @@ public class M1_CreateTestTable implements DatabaseMigration {
 ## Query
 To query a table, define the SQL SELECT statement in the table's `.sq` file. In case of a JOIN, put the SELECT statement in one of the tables involed in the join operation.
 
+For exhaustive information, check [SQLDelight](https://github.com/square/sqldelight) and [SQLBrite](https://github.com/square/sqlbrite) docs.
+
 For example, let's get all the records by age. Add the following to `Test.sq`, after the `CREATE TABLE` statement:
 ```sql
 get_by_age:
@@ -295,6 +297,47 @@ To work, the `IntentService` has to be registered in the manifest:
 <service
     android:name=".PopulateTestTableService"
     android:exported="false" />
+```
+
+## Debug
+### Facebook Stetho
+If you integrate [Facebook Stetho](http://facebook.github.io/stetho/) in your debug builds, you can easily browse the SQLite database and perform queries on it with your Chrome Developer Tools:
+1. Open in Chrome: [chrome://inspect](chrome://inspect)
+2. Click on `inspect` under your device
+3. Click on `Resources` tab, then expand `Web SQL` and select `yourdatabase.db`
+
+### Connecting with ADB
+>Note: This method requires ROOT on the device you're adbing to
+
+1. List devices connected to adb: `adb devices`
+```
+List of devices attached
+emulator-5554   device
+```
+2. Connect to the device (e.g. `emulator-5554`): `adb -s emulator-5554 shell`
+3. Become superuser: `su`
+4. Open your app's database: `sqlite3 data/data/com.youcompany.app/databases/yourdatabase.db`
+5. You can perform all the queries you want
+
+### SQLite cheatsheet
+#### List the tables in your database:
+```
+.tables
+```
+
+#### List how the table looks
+```
+.schema tablename
+```
+
+#### Print the entire table
+```
+SELECT * FROM tablename;
+```
+
+#### List all of the available SQLite prompt commands
+```
+.help
 ```
 
 ## License
