@@ -1,7 +1,7 @@
-# DB Framework
+# Android DB Framework
 Mini reactive framework to work with SQLite databases on Android. This project is powered by [SQLBrite](https://github.com/square/sqlbrite) and [SQLDelight](https://github.com/square/sqldelight) libraries, plus convenient initialization, transaction creation, common database methods and migration support. [Google AutoValue](https://github.com/google/auto/tree/master/value) is used to eliminate the need to write boilerplate for the database models.
 
-# Setup
+## Setup
 In global gradle config file:
 ```groovy
 dependencies {
@@ -30,6 +30,103 @@ dependencies {
 Then, create a directory named `sqldelight` inside your app's `src/main` directory. If your database models package is for example `com.yourcompany.db`, you have to re-create that structure inside `sqldelight` directory like this: `src/main/sqldelight/com/yourcompany/db`. After you've done this, in Android Studio switch to `Project Files` view to be able to see also `sqldelight` directory structure.
 
 In Android Studio open `Preferences` > `Plugins` > `Browse repositories` and search for `SQLDelight`. Install the plugin and restart Android Studio. After this the initial setup is over!
+
+## How to create a table
+1. Create a new `.sq` file inside your `sqldelight` directory, for example `src/main/sqldelight/com/yourcompany/db/Test.sq`:
+```sql
+CREATE TABLE test (
+    _id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT
+);
+```
+2. Rebuild your project. A new interface called `TestModel` will be automatically generated
+3. In your Java package, implement the model:
+```java
+package com.yourcompany.db;
+
+import android.os.Parcelable;
+import android.support.annotation.Nullable;
+
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+public abstract class Test implements TestModel, Parcelable {
+
+    private static final Factory<Test> FACTORY = new Factory<>(new TestModel.Creator<Test>() {
+        @Override
+        public Test create(long _id, @Nullable String name) {
+            return new AutoValue_Test(_id, name);
+        }
+    });
+
+    public static Marshal getMarshal() {
+        return new Marshal(null);
+    }
+
+}
+```
+Bear in mind that `AutoValue_Test` might be red when you write it. You need to recompile for the AutoValue class to be generated.
+
+## Database initialization and migrations
+Create an [Android Application](http://developer.android.com/reference/android/app/Application.html) subclass, register it in your manifest and initialize the database framework like this:
+```java
+public class App extends Application {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        DatabaseManager.Logger logger;
+
+        // this way you will have logging only in debug builds
+        if (BuildConfig.DEBUG) {
+            logger = new DatabaseManager.Logger() {
+                @Override
+                public void onQuery(String query) {
+                    Log.i("DB query", query);
+                }
+
+                @Override
+                public void onMessage(String message) {
+                    Log.i("DB message", message);
+                }
+            };
+        } else {
+            logger = null;
+        }
+
+        // initialize database. It will take care automatically of
+        // executing the needed migrations to update the app's DB schema
+        DatabaseManager.init(this, "yourdatabase.db", logger, new M1_CreateTestTable());
+
+        // to add further migrations, simply add them at the end like this:
+        /*
+        DatabaseManager.init(this, "yourdatabase.db", logger,
+            new M1_CreateTestTable(),
+            new M2_CreateOrdersTable()
+        );
+        */
+    }
+
+}
+```
+
+Bear in mind that whenever you add a new table or modify the schema, you have to add a database migration. If you haven't published the app version yet, you can have a single database migration during the development. Just remind yourself to drop the app and reinstall it after schema changes to prevent strange errors.
+
+A migration looks like this:
+```java
+public class M1_CreateTestTable implements DatabaseMigration {
+    @Override
+    public void up(SQLiteDatabase db) {
+        db.execSQL(TestModel.CREATE_TABLE);
+    }
+
+    @Override
+    public void down(SQLiteDatabase db) {
+        DatabaseManager.getDropTableSql(TestModel.TABLE_NAME);
+    }
+}
+```
 
 ## Publishing
 To publish on bintray, execute: `./gradlew clean assembleRelease bintrayUpload`
