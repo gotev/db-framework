@@ -297,9 +297,6 @@ To work, the `IntentService` has to be registered in the manifest:
     android:exported="false" />
 ```
 
-## Publishing
-To publish on bintray, execute: `./gradlew clean assembleRelease bintrayUpload`
-
 ## License
 
     Copyright (C) 2017 Aleksandar Gotev
