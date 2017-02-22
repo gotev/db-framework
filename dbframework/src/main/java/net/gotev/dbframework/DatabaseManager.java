@@ -333,6 +333,18 @@ public class DatabaseManager {
                 });
     }
 
+    @UiThread
+    public static <T> Observable<T> getObservableWithDefault(SqlDelightStatement statement,
+                                                  final RowMapper<T> mapper, T defaultValue) {
+        return getInstance().openDatabase().createQuery(statement.tables, statement.statement, statement.args)
+                .mapToOneOrDefault(new Func1<Cursor, T>() {
+                    @Override
+                    public T call(Cursor cursor) {
+                        return mapper.map(cursor);
+                    }
+                }, defaultValue);
+    }
+
     public static String getDropTableSql(String tableName) {
         return "DROP TABLE IF EXISTS `" + tableName + "`;";
     }
