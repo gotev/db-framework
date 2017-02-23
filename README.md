@@ -11,7 +11,8 @@ This project is powered by:
 ## Index
 * [Setup](#setup)
 * [Create a table and its Java model](#create)
-* [Database initialization and migrations](#initialization)
+* [Database initialization](#initialization)
+* [Migrations](#migrations)
 * [Query](#query)
 * [Insert, update and delete](#insert-update-delete)
 * [Debug](#debug)
@@ -106,7 +107,7 @@ public abstract class Test implements TestModel, Parcelable {
 
 For exhaustive information, check [SQLDelight](https://github.com/square/sqldelight) docs.
 
-## <a name="initialization"></a>Database initialization and migrations
+## <a name="initialization"></a>Database initialization
 Create an [Android Application](http://developer.android.com/reference/android/app/Application.html) subclass, register it in your manifest and initialize the database framework like this:
 ```java
 public class App extends Application {
@@ -150,6 +151,7 @@ public class App extends Application {
 
 Bear in mind that whenever you add a new table or modify the schema, you have to add a database migration. If you haven't published the app version yet, you can have a single database migration during the development. Just remind yourself to drop the app and reinstall it after schema changes to prevent strange errors.
 
+## <a name="migrations"></a>Migrations
 A migration looks like this:
 ```java
 public class M1_CreateTestTable implements DatabaseMigration {
@@ -164,6 +166,7 @@ public class M1_CreateTestTable implements DatabaseMigration {
     }
 }
 ```
+[Here](https://github.com/square/sqldelight/issues/89#issuecomment-282075609) you can see a complete example of how you can migrate an existing table schema to a new one by adding or removing columns.
 
 ## <a name="query"></a>Query
 To query a table, define the SQL SELECT statement in the table's `.sq` file. In case of a JOIN, put the SELECT statement in one of the tables involed in the join operation.
