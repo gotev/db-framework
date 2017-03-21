@@ -39,7 +39,7 @@ def autoValueVersion = "1.2"
 def autoValueParcelVersion = "0.2.5"
 
 dependencies {
-    compile "net.gotev:dbframework:1.1"
+    compile "net.gotev:dbframework:1.1.1"
     provided "com.google.auto.value:auto-value:${autoValueVersion}"
     apt "com.google.auto.value:auto-value:${autoValueVersion}"
     apt "com.ryanharter.auto.value:auto-value-parcel:${autoValueParcelVersion}"
