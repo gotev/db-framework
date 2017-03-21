@@ -6,9 +6,9 @@ buildscript {
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.3.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-        classpath 'com.squareup.sqldelight:gradle-plugin:0.5.1'
+        classpath 'com.squareup.sqldelight:gradle-plugin:0.6.0'
         classpath 'me.tatarka:gradle-retrolambda:3.5.0'
 
         // NOTE: Do not place your application dependencies here; they belong

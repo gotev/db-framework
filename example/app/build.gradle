@@ -12,7 +12,7 @@ def autoValueVersion = "1.2"
 def autoValueParcelVersion = "0.2.5"
 
 // Other dependencies versions
-def supportVersion = "25.1.1"
+def supportVersion = "25.3.0"
 def rxLifecycleVersion = "1.0"
 def butterKnifeVersion = "8.5.1"
 
