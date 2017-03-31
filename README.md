@@ -37,7 +37,7 @@ apply plugin: 'com.squareup.sqldelight'
 // change the values according to the versions you want to use
 def autoValueVersion = "1.2"
 def autoValueParcelVersion = "0.2.5"
-def dbFrameworkVersion = "1.1.1"
+def dbFrameworkVersion = "1.1.2"
 
 dependencies {
     compile "net.gotev:dbframework:${dbFrameworkVersion}"
