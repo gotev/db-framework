@@ -52,7 +52,7 @@ public class DatabaseManager {
                 .logger(new SqlBrite.Logger() {
                     @Override
                     public void log(String message) {
-                        logMessage("Database - " + message);
+                        logMessage("SQLBrite - " + message);
                     }
                 }).build();
     }
@@ -82,6 +82,7 @@ public class DatabaseManager {
     public synchronized BriteDatabase openDatabase() {
         if (openCount.incrementAndGet() == 1) {
             database = sqlBrite.wrapDatabaseHelper(openHelper, Schedulers.io());
+            database.setLoggingEnabled(log != null);
         }
         return database;
     }
