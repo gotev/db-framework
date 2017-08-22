@@ -12,17 +12,17 @@ def autoValueVersion = "1.2"
 def autoValueParcelVersion = "0.2.5"
 
 // Other dependencies versions
-def supportVersion = "25.3.0"
+def supportVersion = "26.0.1"
 def rxLifecycleVersion = "1.0"
 def butterKnifeVersion = "8.5.1"
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
     defaultConfig {
         applicationId "net.gotev.dbtest"
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

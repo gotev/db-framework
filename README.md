@@ -25,7 +25,7 @@ In global gradle config file:
 ```groovy
 dependencies {
     classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-    classpath 'com.squareup.sqldelight:gradle-plugin:0.6.0'
+    classpath 'com.squareup.sqldelight:gradle-plugin:0.6.1'
 }
 ```
 In app's module gradle config file:
@@ -35,9 +35,9 @@ apply plugin: 'android-apt'
 apply plugin: 'com.squareup.sqldelight'
 
 // change the values according to the versions you want to use
-def autoValueVersion = "1.2"
+def autoValueVersion = "1.5"
 def autoValueParcelVersion = "0.2.5"
-def dbFrameworkVersion = "1.1.2"
+def dbFrameworkVersion = "1.2"
 
 dependencies {
     compile "net.gotev:dbframework:${dbFrameworkVersion}"
