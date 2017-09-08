@@ -57,6 +57,18 @@ public class DatabaseManager {
                 }).build();
     }
 
+    public static synchronized void deinit() {
+        if (instance == null)
+            return;
+
+        instance.closeDatabase();
+        instance = null;
+        openHelper = null;
+        database = null;
+        sqlBrite = null;
+        log = null;
+    }
+
     public static synchronized DatabaseManager getInstance() {
         if (null == instance) {
             throw new IllegalStateException(DatabaseManager.class.getSimpleName()
