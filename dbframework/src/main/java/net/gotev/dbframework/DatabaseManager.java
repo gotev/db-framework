@@ -67,6 +67,7 @@ public class DatabaseManager {
         database = null;
         sqlBrite = null;
         log = null;
+        openCount = new AtomicInteger();
     }
 
     public static synchronized DatabaseManager getInstance() {
