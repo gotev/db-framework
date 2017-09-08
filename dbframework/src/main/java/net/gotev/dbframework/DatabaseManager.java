@@ -61,11 +61,25 @@ public class DatabaseManager {
         if (instance == null)
             return;
 
-        instance.closeDatabase();
-        instance = null;
-        openHelper = null;
-        database = null;
+        try {
+            instance.closeDatabase();
+        } catch (Throwable ignored) { }
+
         sqlBrite = null;
+
+        if (database != null) {
+            database = null;
+        }
+
+        if (openHelper != null) {
+            try {
+                openHelper.close();
+            } catch (Throwable ignored) { }
+            openHelper = null;
+        }
+
+        instance = null;
+
         log = null;
         openCount = new AtomicInteger();
     }
